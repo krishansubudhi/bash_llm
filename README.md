@@ -11,7 +11,7 @@ Instructions:
 3. Test `python main.py who are you?`
 4. Set alias  (replace the path to repo with yours)
     ```
-    echo alias llm='python ~/repos/bash_llm/main.py' >> ~/.bashrc
+    echo "alias llm='python ~/repos/bash_llm/main.py'" >> ~/.bashrc
     source ~/.bashrc
     ```
 5. Enjoy calling llm from your command line.
