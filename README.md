@@ -5,7 +5,8 @@ Instructions:
    ```
    pip install -r requirements.txt
    ```
-2. Create a .env file in the bash_llm root directory. Write this.
+2. Create a .env file in the bash_llm root directory. Write openai key. [How to create a new key?](https://platform.openai.com/docs/quickstart/create-and-export-an-api-key)
+
     OPENAI_API_KEY=your_api_key_here
 
 3. Test `python main.py who are you?`
@@ -16,5 +17,7 @@ Instructions:
     ```
 5. Enjoy calling llm from your command line.
     ```
-    llm command to find all python files in this directory.
+    llm how to find all python files in this dir?
     ```
+
+    ![demo screenshot shell](./demo_screenshot.png)
