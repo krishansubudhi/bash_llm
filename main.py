@@ -1,27 +1,24 @@
-import openai
-from dotenv import load_dotenv
-import os
 import sys
+import llm
+import configparser
 
-load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
+def get_prompt() -> str:
+    """Fetches prompt from command line arguments or asks for input."""
+    return " ".join(sys.argv[1:]) if len(sys.argv) > 1 else input("Enter a prompt: ")
 
-def call_llm(prompt):
-    client = openai.OpenAI()
-    response = client.chat.completions.create(
-        model="gpt-4o",
-        messages=[
-            {   "role": "system", "content": \
-             "You are an assistant running on bash. User is asking questions from their shell. Keep the response concise and helpful."\
-             f"current_directory = {os.getcwd()}"},
-            {   "role": "user", "content": prompt}
-        ]
-    )
-    print(response.choices[0].message.content)
+
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("enter a prompt")
-        prompt = input()
-    prompt = " ".join(sys.argv[1:])
-    call_llm(prompt)
+    config = configparser.ConfigParser()
+    config.read("config.ini")
+    model_provider = config.get("settings", "model_provider")
+    
+    if model_provider == "openai":
+        bash_llm = llm.OpenAILLM()
+    elif model_provider == "gemini":
+       bash_llm = llm.GeminiLLM()
+    else:
+        raise AttributeError(f"Model provider {model_provider} not supported. Add correct 'model_provider' in config.ini")
+
+    prompt = get_prompt()
+    bash_llm.call(prompt)
