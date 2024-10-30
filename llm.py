@@ -20,6 +20,7 @@ class BaseLLM:
             "You are an assistant running on bash. User is asking questions from their shell. "
             "Keep the response concise and helpful."
             f" Current directory: {os.getcwd()}"
+            
         )
 
     def call(self, prompt: str):
@@ -45,7 +46,7 @@ class OpenAILLM(BaseLLM):
                     ]
         )
 
-        print(response.choices[0].message.content)
+        return response.choices[0].message.content
 
 
 class GeminiLLM(BaseLLM):
@@ -59,4 +60,4 @@ class GeminiLLM(BaseLLM):
     def call(self, prompt: str):
         """Calls Google's Gemini API."""
         response = self.model.generate_content(prompt)
-        print(response.text)
+        return response.text
