@@ -16,6 +16,7 @@ class BaseLLM:
     def get_system_instruction(self) -> str:
         """Generates system instruction with the current directory."""
         return (
+            f"Your name is {self.model_name}."
             "You are an assistant running on bash. User is asking questions from their shell. "
             "Keep the response concise and helpful."
             f" Current directory: {os.getcwd()}"

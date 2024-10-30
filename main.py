@@ -1,6 +1,7 @@
 import sys
 import llm
 import configparser
+import os
 
 def get_prompt() -> str:
     """Fetches prompt from command line arguments or asks for input."""
@@ -10,7 +11,9 @@ def get_prompt() -> str:
 
 if __name__ == "__main__":
     config = configparser.ConfigParser()
-    config.read("config.ini")
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    config_path = os.path.join(current_dir, "config.ini")
+    config.read(config_path)
     model_provider = config.get("settings", "model_provider")
     
     if model_provider == "openai":
