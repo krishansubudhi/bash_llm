@@ -2,6 +2,7 @@ import os
 import openai
 import google.generativeai as genai
 from dotenv import load_dotenv
+import platform
 
 load_dotenv()
 
@@ -14,15 +15,19 @@ class BaseLLM:
         self.system_instruction = self.get_system_instruction()
 
     def get_system_instruction(self) -> str:
-        """Generates system instruction with the current directory."""
-        return (
-            f"Your name is {self.model_name}."
-            "You are an assistant running on bash. User is asking questions from their shell. "
-            "Keep the response concise and helpful."
-            f" Current directory: {os.getcwd()}"
-            
-        )
+        # Get OS and shell information
+        os_info = platform.system()
+        shell_type = os.environ.get('SHELL', 'Unknown Shell')
 
+        return (
+            f"Your name is {self.model_name}. "
+            "You are an assistant running on bash. User is asking questions from their shell. "
+            "Use \n```bash \n<command>```\n to format commands."
+            "Keep the response concise and helpful. "
+            f"Current directory: {os.getcwd()}. "
+            f"Operating System: {os_info}. "
+            f"Shell Type: {shell_type}."
+        )
     def call(self, prompt: str):
         """Placeholder for model-specific API calls."""
         raise NotImplementedError("This method should be overridden in subclasses")
