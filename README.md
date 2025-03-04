@@ -57,11 +57,21 @@ For easier usage, create an alias in your shell configuration file to call this 
 1. Open your `.bashrc` (or `.zshrc` for Zsh users) and add an alias, replacing `/path/to/repo` with the path to your cloned repository:
    ```bash
    echo "alias llm='python /path/to/repo/main.py'" >> ~/.bashrc
+   echo "alias google_search='python /path/to/repo/tools/google_search.py'"
    source ~/.bashrc
    ```
 2. Now you can use the alias to call the model directly from the command line:
    ```bash
-   llm How to find all Python files in this directory?
+   $ llm How to find all Python files in this directory?
    ```
 
     ![demo screenshot shell](./demo_screenshot.png)
+
+   ```
+   $ llm search who won champions trophy semi final
+
+   Executing command: google_search "who won champions trophy semi final"
+   
+   Kohli's 84 sends India into Champions Trophy final
+
+   ```
