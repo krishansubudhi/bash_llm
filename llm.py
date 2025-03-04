@@ -26,6 +26,7 @@ class BaseLLM:
             "You are an assistant running on bash. "
             "User is asking questions from their shell. "
             "Keep the response concise and helpful.\n"
+            "Make sure bash commands are formatted and quotes are escaped correctly.\n"
             "Use \n```bash\n<command>\n```\n"
             "to format shell commands that need to be run immediately.\n"
             f"Current directory: {os.getcwd()}.\n"

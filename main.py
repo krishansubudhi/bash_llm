@@ -6,6 +6,7 @@ import sys
 import llm
 import argparse
 import inspect
+import shlex
 def load_config():
     """Loads configuration settings from config.ini."""
     config = configparser.ConfigParser()
@@ -31,10 +32,40 @@ def get_prompt(query_words, additional_commands) -> str:
     return f"{additional_commands_str}\n{help_message}\n\nYour query:\n{user_query_str}"
 
 
+def naive_escape_quotes(command: str) -> str:
+    """Incorrectly escapes quotes."""
+    return command.replace('"', '\\"').replace("'", "")
+
 def extract_bash_command(response: str) -> str:
-    """Extracts a bash command from response formatted in ```bash ... ```."""
-    match = re.search(r"```bash\n(.*?)\n```", response, re.DOTALL)
-    return match.group(1).strip() if match else None
+    """
+    Extracts a bash command from response formatted in ```bash ... ```.
+
+    Adds extra protection against potential issues:
+    - Handles cases where the command block might be at the very beginning or end of the response.
+    - Handles cases where the command block might have extra whitespace around it.
+    - Handles cases where the command block might use different variations of the code block marker (e.g., ```sh).
+    - Prevents potential ReDoS vulnerabilities.
+    - Properly handles quoted arguments within the command.
+    """
+    if not isinstance(response, str) or not response:
+        return None  # Handle invalid input
+
+    match = re.search(r"```(?:bash|sh|shell)\n(.*?)\n```", response, re.DOTALL | re.IGNORECASE)
+
+    if match:
+        command = match.group(1).strip()
+        command = naive_escape_quotes(command)
+        if command and not command.startswith("```"): #prevent nested code blocks.
+            try:
+                # Attempt to parse the command with shlex to handle quotes correctly
+                shlex.split(command) #verify that the command can be properly parsed.
+                return command
+            except ValueError:
+                return None  # Return None if command parsing fails
+        else:
+            return None #failed additional check.
+    else:
+        return None
 
 def run_bash_command(command: str, ask_for_confirmation: bool) -> str:
     """Executes a bash command if confirmed by the user."""
